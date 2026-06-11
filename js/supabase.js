@@ -6,8 +6,8 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 // 1) Paste your Supabase project credentials here -----------------
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'
+const SUPABASE_URL = 'Yhttps://xqoxwfsctygkykypmalf.supabase.co/rest/v1/'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhxb3h3ZnNjdHlna3lreXBtYWxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNjczMzEsImV4cCI6MjA5Njc0MzMzMX0.recW5q8w-sJoLkKEq3Yqh1ewHxHX9oPHMdDGsfWMJ9c'
 // -----------------------------------------------------------------
 
 export const IS_CONFIGURED =
