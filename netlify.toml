@@ -1,0 +1,18 @@
+# Netlify configuration for SPA redirects
+# The app uses app.html as the main shell after login.
+# index.html stays as the landing/auth page.
+
+[build]
+  publish = "."
+
+# SPA fallback: any unknown deep link inside the app resolves to app.html
+[[redirects]]
+  from = "/app/*"
+  to = "/app.html"
+  status = 200
+
+# Keep the root serving the landing page
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
