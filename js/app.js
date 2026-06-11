@@ -1,7 +1,7 @@
 // js/app.js — application bootstrap for app.html
 import { Auth } from './supabase.js'
 import { Router } from './router.js'
-import { getStreak, t } from './util.js'
+import { getStreak } from './util.js'
 
 // Feature modules
 import * as dashboard from './dashboard.js'
@@ -67,7 +67,7 @@ async function boot() {
   const name = user.full_name || user.user_metadata?.full_name || (user.email || 'Guest').split('@')[0]
   const un = document.getElementById('userName'); if (un) un.textContent = name
   const ua = document.getElementById('userAvatar'); if (ua) ua.textContent = (name[0] || 'U').toUpperCase()
-  const st = document.getElementById('streakCount'); if (st) st.textContent = getStreak()
+  getStreak().then(s => { const st = document.getElementById('streakCount'); if (st) st.textContent = s.current_streak || 0 })
 
   // controls
   document.getElementById('themeToggle')?.addEventListener('click', () => {
