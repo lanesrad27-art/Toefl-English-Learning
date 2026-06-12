@@ -93,4 +93,8 @@ async function boot() {
   Router.start('dashboard')
 }
 
-boot()
+boot().catch(function (err) {
+  console.error('boot() failed:', err)
+  var v = document.getElementById('view')
+  if (v) v.innerHTML = '<div style="padding:24px;color:#900"><h3>⚠️ Gagal memuat dashboard</h3><pre style="white-space:pre-wrap;background:#fff;border:1px solid #eee;padding:10px;border-radius:8px;font-size:12px">' + String((err && (err.stack || err.message)) || err).replace(/</g, '&lt;') + '</pre></div>'
+})

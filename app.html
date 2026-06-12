@@ -43,6 +43,36 @@
   </div>
   <div id="overlay"></div>
   <div id="toast"></div>
+  <script>
+    (function () {
+      function showErr(msg) {
+        var v = document.getElementById('view');
+        if (!v) return;
+        v.innerHTML =
+          '<div style="padding:24px;max-width:760px;margin:0 auto">' +
+          '<div style="background:#fdecea;border:1px solid #f5c6cb;color:#a11;border-radius:12px;padding:16px 18px">' +
+          '<h3 style="margin:0 0 8px">⚠️ Aplikasi gagal dimuat</h3>' +
+          '<pre style="white-space:pre-wrap;background:#fff;border:1px solid #eee;border-radius:8px;padding:10px;font-size:12px;color:#900;overflow:auto">' +
+          String(msg).replace(/</g, '&lt;') +
+          '</pre>' +
+          '<p style="font-size:13px;color:#555;margin-top:10px">Kemungkinan ada file yang belum ter-upload ke GitHub, atau browser memuat versi lama. Coba hard refresh (Ctrl+Shift+R) atau buka Incognito.</p>' +
+          '</div></div>';
+      }
+      window.addEventListener('error', function (e) {
+        showErr((e.message || 'Error') + ' — ' + (e.filename || ''));
+      });
+      window.addEventListener('unhandledrejection', function (e) {
+        var r = e && e.reason;
+        showErr((r && (r.stack || r.message)) || String(r));
+      });
+      setTimeout(function () {
+        var nav = document.getElementById('sbnav');
+        if (nav && (!nav.innerHTML || nav.innerHTML.length < 20)) {
+          showErr('app.js tidak berjalan: menu & dashboard tetap kosong setelah 4 detik. Buka Console (F12) dan cari pesan "Failed to load module" untuk tahu file mana yang hilang/salah.');
+        }
+      }, 4000);
+    })();
+  </script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
