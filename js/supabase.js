@@ -6,7 +6,7 @@
 // Supabase SDK is imported lazily (only when configured) so guest mode works fully offline.
 
 // 1) Paste your Supabase project credentials here -----------------
-const SUPABASE_URL = 'https://hjqvcfpegntincxqnnsz.supabase.co/rest/v1/'
+const SUPABASE_URL = 'https://hjqvcfpegntincxqnnsz.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqcXZjZnBlZ250aW5jeHFubnN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNzMzNTQsImV4cCI6MjA5Njc0OTM1NH0.u3XtsaQRl5Uahi2JWlBQnWG2kf5uQPo9ARdCqm4d09Q'
 // -----------------------------------------------------------------
 
