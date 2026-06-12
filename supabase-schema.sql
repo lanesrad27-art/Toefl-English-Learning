@@ -87,6 +87,15 @@ ALTER TABLE daily_journal  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE study_plan     ENABLE ROW LEVEL SECURITY;
 
 -- Helper macro pattern repeated per table -----------------------
+-- DROP first so this file can be re-run safely (idempotent).
+DROP POLICY IF EXISTS "own profile"  ON users_profile;
+DROP POLICY IF EXISTS "own progress" ON user_progress;
+DROP POLICY IF EXISTS "own streak"   ON user_streak;
+DROP POLICY IF EXISTS "own errors"   ON error_journal;
+DROP POLICY IF EXISTS "own srs"      ON vocabulary_srs;
+DROP POLICY IF EXISTS "own journal"  ON daily_journal;
+DROP POLICY IF EXISTS "own plan"     ON study_plan;
+
 CREATE POLICY "own profile"  ON users_profile  FOR ALL USING (auth.uid() = id)      WITH CHECK (auth.uid() = id);
 CREATE POLICY "own progress" ON user_progress  FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "own streak"   ON user_streak    FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
