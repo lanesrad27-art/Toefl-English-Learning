@@ -3,11 +3,11 @@
 // Works with Supabase when configured, otherwise falls back to a local
 // (localStorage) guest mode so the app runs immediately after drag-drop.
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+// Supabase SDK is imported lazily (only when configured) so guest mode works fully offline.
 
 // 1) Paste your Supabase project credentials here -----------------
-const SUPABASE_URL = 'https://hjqvcfpegntincxqnnsz.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqcXZjZnBlZ250aW5jeHFubnN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNzMzNTQsImV4cCI6MjA5Njc0OTM1NH0.u3XtsaQRl5Uahi2JWlBQnWG2kf5uQPo9ARdCqm4d09Q'
+const SUPABASE_URL = 'YOUR_SUPABASE_URL'
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'
 // -----------------------------------------------------------------
 
 export const IS_CONFIGURED =
@@ -15,9 +15,17 @@ export const IS_CONFIGURED =
   SUPABASE_ANON_KEY && SUPABASE_ANON_KEY.length > 20 &&
   SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY'
 
-export const supabase = IS_CONFIGURED
-  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : null
+// Lazily load and cache the Supabase client, only when configured.
+// This keeps guest mode fully functional with no external/CDN dependency.
+let _client = null
+async function client() {
+  if (!IS_CONFIGURED) return null
+  if (!_client) {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm')
+    _client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  }
+  return _client
+}
 
 // ================= AUTH =================
 const LS_GUEST = 'toefl_guest_user'
@@ -27,13 +35,13 @@ export const Auth = {
 
   async signUp({ email, password, full_name, target_score, current_level }) {
     if (IS_CONFIGURED) {
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error } = await (await client()).auth.signUp({
         email, password,
         options: { data: { full_name, target_score, current_level } },
       })
       if (error) throw error
       if (data.user) {
-        await supabase.from('users_profile').upsert({
+        await (await client()).from('users_profile').upsert({
           id: data.user.id, full_name, target_score, current_level,
         })
       }
@@ -47,7 +55,7 @@ export const Auth = {
 
   async signIn({ email, password }) {
     if (IS_CONFIGURED) {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error } = await (await client()).auth.signInWithPassword({ email, password })
       if (error) throw error
       return data.user
     }
@@ -58,7 +66,7 @@ export const Auth = {
 
   async signInWithGoogle() {
     if (!IS_CONFIGURED) throw new Error('Hubungkan Supabase dulu untuk login Google.')
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await (await client()).auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: location.origin + '/app.html' },
     })
@@ -67,20 +75,20 @@ export const Auth = {
 
   async resetPassword(email) {
     if (!IS_CONFIGURED) throw new Error('Reset password butuh Supabase aktif.')
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await (await client()).auth.resetPasswordForEmail(email, {
       redirectTo: location.origin + '/index.html',
     })
     if (error) throw error
   },
 
   async signOut() {
-    if (IS_CONFIGURED) await supabase.auth.signOut()
+    if (IS_CONFIGURED) await (await client()).auth.signOut()
     localStorage.removeItem(LS_GUEST)
   },
 
   async getUser() {
     if (IS_CONFIGURED) {
-      const { data } = await supabase.auth.getUser()
+      const { data } = await (await client()).auth.getUser()
       if (!data.user) return null
       const { data: prof } = await supabase
         .from('users_profile').select('*').eq('id', data.user.id).single()
@@ -117,7 +125,7 @@ export const DB = {
     const user_id = await this.userId()
     const full = { id: uid(), user_id, created_at: new Date().toISOString(), ...row }
     if (IS_CONFIGURED) {
-      const { data, error } = await supabase.from(table).insert(full).select().single()
+      const { data, error } = await (await client()).from(table).insert(full).select().single()
       if (error) { console.warn('insert', table, error.message); return full }
       return data
     }
@@ -128,7 +136,7 @@ export const DB = {
   async select(table, eq = {}) {
     const user_id = await this.userId()
     if (IS_CONFIGURED) {
-      let q = supabase.from(table).select('*').eq('user_id', user_id)
+      let q = (await client()).from(table).select('*').eq('user_id', user_id)
       for (const [k, v] of Object.entries(eq)) q = q.eq(k, v)
       const { data, error } = await q
       if (error) { console.warn('select', table, error.message); return [] }
@@ -143,7 +151,7 @@ export const DB = {
     const user_id = await this.userId()
     const full = { user_id, ...row }
     if (IS_CONFIGURED) {
-      const { data, error } = await supabase.from(table).upsert(full).select().single()
+      const { data, error } = await (await client()).from(table).upsert(full).select().single()
       if (error) { console.warn('upsert', table, error.message); return full }
       return data
     }
@@ -155,7 +163,7 @@ export const DB = {
 
   async update(table, id, patch) {
     if (IS_CONFIGURED) {
-      const { data, error } = await supabase.from(table).update(patch).eq('id', id).select().single()
+      const { data, error } = await (await client()).from(table).update(patch).eq('id', id).select().single()
       if (error) { console.warn('update', table, error.message) }
       return data
     }
@@ -164,7 +172,7 @@ export const DB = {
   },
 
   async remove(table, id) {
-    if (IS_CONFIGURED) { await supabase.from(table).delete().eq('id', id); return }
+    if (IS_CONFIGURED) { await (await client()).from(table).delete().eq('id', id); return }
     lsWrite(table, lsRead(table).filter(r => r.id !== id))
   },
 }

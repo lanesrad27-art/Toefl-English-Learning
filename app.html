@@ -1,45 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-font="md">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TOEFL Pro — App</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/dark.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOEFL Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dark.css">
 </head>
 <body>
-<div class="app">
-  <aside id="sidebar">
-    <div class="sb-brand"><span class="logo">T</span> TOEFL Pro</div>
-    <nav id="sbnav"></nav>
-  </aside>
-
-  <div class="main">
-    <header class="topbar">
-      <button id="menuBtn" aria-label="Menu">☰</button>
-      <span class="crumb" id="crumb">Dashboard</span>
-      <span class="topbar-spacer"></span>
-      <span class="streak" title="Study streak">🔥 <span id="streakCount">0</span></span>
-      <button class="icon-btn" id="eoToggle" title="English Only Mode">🇬🈧</button>
-      <select class="icon-btn" id="fontSel" title="Font size" style="width:auto;padding:0 8px">
-        <option value="sm">A-</option><option value="md">A</option><option value="lg">A+</option>
-      </select>
-      <button class="icon-btn" id="themeToggle" title="Toggle dark mode">🌙</button>
-      <div class="user-chip">
-        <span class="avatar" id="userAvatar">U</span>
-        <span id="userName" class="muted">…</span>
-        <button class="icon-btn" id="logoutBtn" title="Sign out">⏻</button>
-      </div>
-    </header>
-    <main id="view"></main>
+  <div class="app">
+    <aside id="sidebar">
+      <div class="sb-brand"><span class="logo">T</span> TOEFL Pro</div>
+      <nav id="sbnav"></nav>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button id="menuBtn" aria-label="Menu">☰</button>
+        <span class="crumb" id="crumb">Dashboard</span>
+        <div class="topbar-spacer"></div>
+        <div class="streak" title="Day streak">🔥 <span id="streakCount">0</span></div>
+        <button class="icon-btn" id="eoToggle" title="English Only Mode">🇬🇧</button>
+        <label class="sel-label" title="Font size">
+          <select id="fontSel" aria-label="Font size">
+            <option value="sm">A−</option>
+            <option value="md" selected>A</option>
+            <option value="lg">A+</option>
+          </select>
+        </label>
+        <button class="icon-btn" id="themeToggle" title="Toggle dark mode">🌙</button>
+        <div class="user-chip">
+          <span class="avatar" id="userAvatar">U</span>
+          <span id="userName">Guest</span>
+          <button class="icon-btn" id="logoutBtn" title="Log out">⏻</button>
+        </div>
+      </header>
+      <main id="view"></main>
+    </div>
   </div>
-</div>
-
-<div id="overlay"></div>
-<div id="toast"></div>
-<script type="module" src="js/app.js"></script>
+  <div id="overlay"></div>
+  <div id="toast"></div>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
